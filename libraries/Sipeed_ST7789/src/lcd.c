@@ -173,8 +173,13 @@ void lcd_set_area(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2)
 
 void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color)
 {
+    uint8_t data[2] = {0};
+
     lcd_set_area(x, y, x, y);
-    tft_write_half(&color, 1);
+
+    data[0] = (uint8_t)(color >> 8);
+    data[1] = (uint8_t)(color);
+    tft_write_byte(data, 2);
 }
 
 void lcd_clear(uint16_t color)
