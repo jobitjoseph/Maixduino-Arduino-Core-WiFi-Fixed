@@ -6,6 +6,7 @@ static int8_t g_gpio_rst;
 static spi_device_num_t g_spi_num;
 static dmac_channel_number_t g_dma_ch;
 static uint8_t g_ss;
+static uint8_t g_wmb;
 
 static void init_dcx(uint8_t dcx, int8_t dcx_pin)
 {
@@ -60,44 +61,44 @@ void tft_hard_init(uint8_t spi, uint8_t ss, uint8_t rst, uint8_t dcx, uint32_t f
     set_rst(1);
 }
 
+#define tft_work_mode(bits, ilen, alen)\
+{\
+    if (g_wmb != bits) {\
+        spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, bits, 0);\
+        spi_init_non_standard(g_spi_num, ilen /*instrction length*/, alen /*address length*/, 0 /*wait cycles*/,\
+                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);\
+        g_wmb = bits;\
+    }\
+}
+
 void tft_write_command(uint8_t cmd)
 {
     set_dcx_control();
-    spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
-    spi_init_non_standard(g_spi_num, 8 /*instrction length*/, 0 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);
+    tft_work_mode(8, 8, 0);
     spi_send_data_normal_dma(g_dma_ch, g_spi_num, g_ss, (uint8_t *)(&cmd), 1, SPI_TRANS_CHAR);
     set_dcx_data();
 }
 
 void tft_write_byte(uint8_t *data_buf, uint32_t length)
 {
-    spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
-    spi_init_non_standard(g_spi_num, 8 /*instrction length*/, 0 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);
+    tft_work_mode(8, 8, 0);
     spi_send_data_normal_dma(g_dma_ch, g_spi_num, g_ss, data_buf, length, SPI_TRANS_CHAR);
 }
 
 void tft_write_half(uint16_t *data_buf, uint32_t length)
 {
-    spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 16, 0);
-    spi_init_non_standard(g_spi_num, 16 /*instrction length*/, 0 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);
+    tft_work_mode(16, 16, 0);
     spi_send_data_normal_dma(g_dma_ch, g_spi_num, g_ss, data_buf, length, SPI_TRANS_SHORT);
 }
 
 void tft_write_word(uint32_t *data_buf, uint32_t length)
 {
-    spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 32, 0);
-    spi_init_non_standard(g_spi_num, 0 /*instrction length*/, 32 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);
+    tft_work_mode(32, 0, 32);
     spi_send_data_normal_dma(g_dma_ch, g_spi_num, g_ss, data_buf, length, SPI_TRANS_INT);
 }
 
 void tft_fill_data(uint32_t *data_buf, uint32_t length)
 {
-    spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 32, 0);
-    spi_init_non_standard(g_spi_num, 0 /*instrction length*/, 32 /*address length*/, 0 /*wait cycles*/,
-                          SPI_AITM_AS_FRAME_FORMAT /*spi address trans mode*/);
+    tft_work_mode(32, 0, 32);
     spi_fill_data_dma(g_dma_ch, g_spi_num, g_ss, data_buf, length);
 }
