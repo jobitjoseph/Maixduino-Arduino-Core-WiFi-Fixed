@@ -18,8 +18,6 @@
 
 static lcd_ctl_t lcd_ctl;
 
-uint16_t g_lcd_display_buff[LCD_Y_MAX * LCD_X_MAX];
-
 static uint16_t gray2rgb565[64] = {
     0x0000,
     0x2000,
@@ -214,16 +212,8 @@ void lcd_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint
 
 void lcd_draw_picture(uint16_t x1, uint16_t y1, uint16_t width, uint16_t height, uint16_t *ptr)
 {
-    uint32_t i;
-    uint16_t *p = ptr;
     lcd_set_area(x1, y1, x1 + width - 1, y1 + height - 1);
-    for (i = 0; i < LCD_MAX_PIXELS; i += 2)
-    {
-        g_lcd_display_buff[i] = SWAP_16(*(p + 1));
-        g_lcd_display_buff[i + 1] = SWAP_16(*(p));
-        p += 2;
-    }
-    tft_write_word((uint32_t*)g_lcd_display_buff, width * height / 2);
+    tft_write_byte((uint8_t *)ptr, width * height *2);
 }
 
 //draw pic's roi on (x,y)
