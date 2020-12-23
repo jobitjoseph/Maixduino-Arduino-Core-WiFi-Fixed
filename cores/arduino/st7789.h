@@ -96,6 +96,7 @@ void tft_set_clk_freq(uint32_t freq);
 void tft_write_command(uint8_t cmd);
 void tft_write_byte(uint8_t *data_buf, uint32_t length);
 void tft_write_half(uint16_t *data_buf, uint32_t length);
+void tft_fill_half(uint16_t *data_buf, uint32_t length);
 void tft_write_word(uint32_t *data_buf, uint32_t length);
 void tft_fill_data(uint32_t *data_buf, uint32_t length);
 
