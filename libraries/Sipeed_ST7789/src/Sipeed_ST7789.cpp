@@ -163,6 +163,14 @@ void Sipeed_ST7789::invertDisplay(boolean invert) {
     lcd_set_direction((lcd_dir_t)_screenDir);
 }
 
+/***************************************************************************************
+** Function name:           color565
+** Description:             convert three 8 bit RGB levels to a 16 bit colour value
+***************************************************************************************/
+uint16_t Sipeed_ST7789::color565(uint8_t r, uint8_t g, uint8_t b) {
+    return ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+}
+
 void Sipeed_ST7789::drawImage(uint16_t x1, uint16_t y1, uint16_t width, uint16_t height, uint16_t* img)
 {
     configASSERT(img!=nullptr || img!=0);
