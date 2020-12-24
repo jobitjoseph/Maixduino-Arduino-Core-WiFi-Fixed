@@ -13,3 +13,6 @@
 [submodule "libraries/lv_maixduino"]
 	path = libraries/lv_maixduino
 	url = https://github.com/littlevgl/lv_maixduino.git
+[submodule "libraries/Seeed_Arduino_LCD"]
+	path = libraries/Seeed_Arduino_LCD
+	url = https://github.com/scpcom/Seeed_Arduino_LCD
