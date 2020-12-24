@@ -94,7 +94,7 @@ void tft_write_half(uint16_t *data_buf, uint32_t length)
 void tft_fill_half(uint16_t *data_buf, uint32_t length)
 {
     tft_work_mode(16, 0, 16);
-    spi_fill_data_dma(g_dma_ch, g_spi_num, g_ss, data_buf, length);
+    spi_fill_data_dma(g_dma_ch, g_spi_num, g_ss, (uint32_t *)data_buf, length);
 }
 
 void tft_write_word(uint32_t *data_buf, uint32_t length)
