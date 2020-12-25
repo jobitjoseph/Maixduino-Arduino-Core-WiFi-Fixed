@@ -20,10 +20,18 @@
 #include "sensor.h"
 #include "i2c.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GC2145_ID       0x45 // (0x2145)
 #define GC2145_ADDR     (0x78>>1)
 
 int gc2145_reset(sensor_t *sensor);
 int gc2145_init(sensor_t *sensor);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GC2145_H__ */

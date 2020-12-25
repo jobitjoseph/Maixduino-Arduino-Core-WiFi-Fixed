@@ -9,9 +9,11 @@
 #ifndef __OMV_BOARDCONFIG_H__
 #define __OMV_BOARDCONFIG_H__
 
-#include "imlib_config.h"
-#include "lcd.h"
-#include "global_config.h"
+// #include "imlib_config.h"
+// #include "lcd.h"
+// #include "global_config.h"
+
+#define CONFIG_SENSOR_FREQ 24000000
 
 #define OMV_INIT_BPP 2
 

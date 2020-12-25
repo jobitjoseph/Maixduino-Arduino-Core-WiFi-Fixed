@@ -13,7 +13,7 @@
 #include "gc0328.h"
 #include "gc2145.h"
 #include "mt9d111.h"
-#include "py/mpprint.h"
+// #include "py/mpprint.h"
 #include "sysctl.h"
 #include "fpioa.h"
 #include "sipeed_i2c.h"

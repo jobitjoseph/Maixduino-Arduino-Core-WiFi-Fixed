@@ -11,9 +11,48 @@
 #include "utils.h"
 #include "plic.h"
 #include "math.h"
+#include "cambus.h"
+#include "gc0328.h"
+#include "gc2145.h"
+#include "ov2640.h"
 #include "Arduino.h" // millis
 
 volatile static uint8_t g_dvp_finish_flag = 0;
+
+struct sensor_config_t {
+    uint8_t cmos_pclk;
+    uint8_t cmos_xclk;
+    uint8_t cmos_href;
+    uint8_t cmos_pwdn;
+    uint8_t cmos_vsync;
+    uint8_t cmos_rst;
+
+    uint8_t reg_width;
+    uint8_t i2c_num;
+    uint8_t pin_clk;
+    uint8_t pin_sda;
+    uint8_t gpio_clk;
+    uint8_t gpio_sda;
+};
+
+/* 8 or 16 */
+#define SENSOR_REG_WIDTH 16
+/* 2 or -2 */
+#define SENSOR_I2C_NUM   2
+
+#define SENSOR_PINS_SWAPPED
+
+#ifdef SENSOR_PINS_SWAPPED
+static struct sensor_config_t sensor_config = {
+    47, 46, 45, 44, 43, 42,
+    SENSOR_REG_WIDTH, SENSOR_I2C_NUM, 41, 40, 0, 0
+};
+#else
+static struct sensor_config_t sensor_config = {
+    40, 41, 42, 43, 44, 45,
+    SENSOR_REG_WIDTH, SENSOR_I2C_NUM, 46, 47, 0, 0
+};
+#endif
 
 #define IM_MAX(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a > _b ? _a : _b; })
 #define IM_MIN(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a < _b ? _a : _b; })
@@ -21,17 +60,20 @@ volatile static uint8_t g_dvp_finish_flag = 0;
 #define IM_MOD(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _b ? (_a % _b) : 0; })
 
 
+#if 0
 typedef enum {
     ACTIVE_LOW,
     ACTIVE_HIGH,
     ACTIVE_BINOCULAR,
 } polarity_t;
+#endif
 
 #define DCMI_RESET_LOW()      dvp->cmos_cfg &= ~DVP_CMOS_RESET
 #define DCMI_RESET_HIGH()     dvp->cmos_cfg |= DVP_CMOS_RESET
 #define DCMI_PWDN_LOW()       dvp->cmos_cfg |= DVP_CMOS_POWER_DOWN
 #define DCMI_PWDN_HIGH()      dvp->cmos_cfg &= ~DVP_CMOS_POWER_DOWN
 
+#if 0
 #define SVGA_HSIZE     (800)
 #define SVGA_VSIZE     (600)
 
@@ -593,6 +635,7 @@ static const uint8_t saturation_regs[NUM_SATURATION_LEVELS + 1][5] = {
     { 0x00, 0x02, 0x03, 0x58, 0x58 }, /* +1 */
     { 0x00, 0x02, 0x03, 0x58, 0x58 }, /* +2 */
 };
+#endif
 
 
 
@@ -668,7 +711,7 @@ bool Sipeed_OV2640::reset()
 {
     if(dvpInit() != 0)
         return false;
-    if(ov2640_reset() != 0)
+    if(_sensor.reset(&_sensor) != 0)
         return false;
     if(dvpInitIrq() != 0)
         return false;
@@ -677,14 +720,14 @@ bool Sipeed_OV2640::reset()
 
 bool Sipeed_OV2640::setPixFormat(pixformat_t pixFormat)
 {
-    if(ov2640_set_pixformat(pixFormat) != 0)
+    if(_sensor.set_pixformat(&_sensor,  pixFormat) != 0)
         return false;
     return true;
 }
 
 bool Sipeed_OV2640::setFrameSize(framesize_t frameSize)
 {
-    if(ov2640_set_framesize(frameSize) != 0)
+    if(_sensor.set_framesize(&_sensor, frameSize) != 0)
         return false;
     return true;
 }  
@@ -729,8 +772,8 @@ void Sipeed_OV2640::setRotation(uint8_t rotation)
 void Sipeed_OV2640::setInvert(bool invert)
 {
     //FIXME
-    ov2640_set_hmirror(!invert); 
-    //ov2640_set_vflip(1);
+    _sensor.set_hmirror(&_sensor, !invert);
+    //_sensor.set_vflip(&_sensor, 1);
     return;
 }
 
@@ -742,6 +785,7 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
     configASSERT(_pixFormat==PIXFORMAT_RGB565 || _pixFormat==PIXFORMAT_YUV422);
     _freq  = freq;
 
+#if 0
 	fpioa_set_function(47, FUNC_CMOS_PCLK);
 	fpioa_set_function(46, FUNC_CMOS_XCLK);
 	fpioa_set_function(45, FUNC_CMOS_HREF);
@@ -750,6 +794,14 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
 	fpioa_set_function(42, FUNC_CMOS_RST);
 	fpioa_set_function(41, FUNC_SCCB_SCLK);
 	fpioa_set_function(40, FUNC_SCCB_SDA);
+#else
+    fpioa_set_function(sensor_config.cmos_pclk, FUNC_CMOS_PCLK);
+    fpioa_set_function(sensor_config.cmos_xclk, FUNC_CMOS_XCLK);
+    fpioa_set_function(sensor_config.cmos_href, FUNC_CMOS_HREF);
+    fpioa_set_function(sensor_config.cmos_pwdn, FUNC_CMOS_PWDN);
+    fpioa_set_function(sensor_config.cmos_vsync, FUNC_CMOS_VSYNC);
+    fpioa_set_function(sensor_config.cmos_rst, FUNC_CMOS_RST);
+#endif
 
     /* Do a power cycle */
     DCMI_PWDN_HIGH();
@@ -759,7 +811,19 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
     msleep(10);
 
     // Initialize the camera bus, 8bit reg
+#if 0
     dvp_init(8);
+#else
+    // Initialize the camera bus, 8bit reg
+    cambus_init(
+        sensor_config.reg_width, // 16 //  8
+        sensor_config.i2c_num,   //  2 // -2
+        sensor_config.pin_clk,   // 46 // 41
+        sensor_config.pin_sda,   // 47 // 40
+        sensor_config.gpio_clk,  // 0
+        sensor_config.gpio_sda   // 0
+    );
+#endif
 	 // Initialize dvp interface
 	dvp_set_xclk_rate(freq);
 	dvp->cmos_cfg |= DVP_CMOS_CLK_DIV(3) | DVP_CMOS_CLK_ENABLE;
@@ -767,14 +831,19 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
 	dvp_disable_auto();
 	dvp_set_output_enable(DVP_OUTPUT_AI, 1);	//enable to AI
 	dvp_set_output_enable(DVP_OUTPUT_DISPLAY, 1);	//enable to lcd
+#if 0
     if( _pixFormat == PIXFORMAT_YUV422)
+#endif
         dvp_set_image_format(DVP_CFG_YUV_FORMAT);
+#if 0
     else
 	    dvp_set_image_format(DVP_CFG_RGB_FORMAT);
+#endif
 	dvp_set_image_size(_width, _height);	//set QVGA default
 	dvp_set_ai_addr( (uint32_t)((long)_aiBuffer), (uint32_t)((long)(_aiBuffer+_width*_height)), (uint32_t)((long)(_aiBuffer+_width*_height*2)));
 	dvp_set_display_addr( (uint32_t)((long)_dataBuffer) );
 
+    _sensor.chip_id = 0;
     if(0 == sensor_ov_detect()){//find ov sensor
         // printf("find ov sensor\n");
     }
@@ -785,6 +854,7 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
     return 0;
 }
 
+#if 0
 int Sipeed_OV2640::cambus_scan()
 {
 
@@ -860,11 +930,14 @@ int Sipeed_OV2640::cambus_writew2(uint8_t slv_addr, uint16_t reg_addr, uint16_t 
 {
     return 0;
 }
+#endif
 
 
 
 int Sipeed_OV2640::sensor_ov_detect()
 {
+    sensor_t *sensor = &_sensor;
+
     /* Reset the sensor */
     DCMI_RESET_HIGH();
     msleep(10);
@@ -917,18 +990,23 @@ int Sipeed_OV2640::sensor_ov_detect()
     } else {
         // Read ON semi sensor ID.
         cambus_readb(_slaveAddr, ON_CHIP_ID, &_id);
+        Serial.printf("[MAIX]: on id = %x\n", _id);
         if (_id == MT9V034_ID) {
 			/*set MT9V034 xclk rate*/
 			/*mt9v034_init*/
         } else { // Read OV sensor ID.
             cambus_readb(_slaveAddr, OV_CHIP_ID, &_id);
+            Serial.printf("[MAIX]: ov id = %x\n", _id);
             // Initialize sensor struct.
+            sensor->chip_id = _id;
             switch (_id) {
                 case OV9650_ID:
 					/*ov9650_init*/
                     break;
                 case OV2640_ID:
-                    // printf("detect ov2640, id:%x\n", _slaveAddr);
+                    sensor->slv_addr = _slaveAddr;
+                    Serial.printf("detect ov2640, id:%x\n", _slaveAddr);
+                    ov2640_init(sensor);
                     break;
                 case OV7725_ID:
 					/*ov7725_init*/
@@ -949,6 +1027,8 @@ int Sipeed_OV2640::sensor_ov_detect()
 
 int Sipeed_OV2640::sensro_gc_detect()
 {
+    sensor_t *sensor = &_sensor;
+
     DCMI_PWDN_HIGH();//enable gc0328 要恢复 normal 工作模式，需将 PWDN pin 接入低电平即可，同时写入初始化寄存器即可
     DCMI_RESET_LOW();//reset gc3028
     msleep(10);
@@ -961,9 +1041,25 @@ int Sipeed_OV2640::sensro_gc_detect()
     }
     else
     {
-        // printf("[MAIXPY]: gc0328 id = %x\n",id); 
-        _slaveAddr = GC0328_ADDR;
+        Serial.printf("[MAIX]: gc id = %x\n",id);
         _id = id;
+        sensor->chip_id = id;
+        switch (sensor->chip_id)
+        {
+        case GC0328_ID:
+            _slaveAddr = GC0328_ADDR;
+            sensor->slv_addr = _slaveAddr;
+            Serial.printf("[MAIX]: find gc0328\n");
+            gc0328_init(sensor);
+            break;
+        case GC2145_ID:
+            _slaveAddr = GC2145_ADDR;
+            sensor->slv_addr = _slaveAddr;
+            Serial.printf("[MAIX]: find gc2145\n");
+            gc2145_init(sensor);
+        default:
+            break;
+        }
     }
     return 0;
 }
@@ -1009,6 +1105,7 @@ int Sipeed_OV2640::dvpInitIrq()
 
 
 
+#if 0
 int Sipeed_OV2640::ov2640_reset()
 {
     int i=0;
@@ -1487,6 +1584,7 @@ int Sipeed_OV2640::ov2640_set_vflip(int enable)
 
     return ret;
 }
+#endif
 
 int Sipeed_OV2640::reverse_u32pixel(uint32_t* addr,uint32_t length)
 {

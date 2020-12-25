@@ -3,7 +3,7 @@
 
 
 
-static const int resolution[][2] = {
+const int resolution[][2] = {
     {0,    0   },
     // C/SIF Resolutions
     {88,   72  },    /* QQCIF     */
@@ -26,6 +26,7 @@ static const int resolution[][2] = {
     {64,   64  },    /* 64x64     */
     {128,  64  },    /* 128x64    */
     {128,  128 },    /* 128x64    */
+    {240,  240 },    /* 240x240   */
     // Other
     {128,  160 },    /* LCD       */
     {128,  160 },    /* QQVGA2    */
@@ -34,6 +35,7 @@ static const int resolution[][2] = {
     {800,  600 },    /* SVGA      */
     {1280, 1024},    /* SXGA      */
     {1600, 1200},    /* UXGA      */
+    {320,  240 },    /* Custom    */
 };
 
 Camera::Camera(framesize_t frameSize, pixformat_t pixFormat)

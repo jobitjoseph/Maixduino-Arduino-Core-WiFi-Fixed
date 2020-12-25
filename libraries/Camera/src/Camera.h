@@ -3,7 +3,9 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include "sensor.h"
 
+#if 0
 typedef enum {
     PIXFORMAT_INVLAID = 0,
     PIXFORMAT_BAYER,     // RAW
@@ -46,6 +48,7 @@ typedef enum {
     FRAMESIZE_UXGA,     // 1600x1200
     FRAMESIZE_CUSTOM,
 } framesize_t;
+#endif
 
 
 class Camera{

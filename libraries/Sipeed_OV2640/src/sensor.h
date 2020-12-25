@@ -9,9 +9,31 @@
 
 #ifndef __SENSOR_H__
 #define __SENSOR_H__
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdlib.h>
 #include <stdint.h>
-#include "imlib.h"
+#include <string.h>
+#include <limits.h>
+#include <math.h>
+#include "fmath.h"
+// #include "imlib.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "wiring.h"
+
+typedef uint8_t image_t;
+typedef uint32_t mp_int_t;
+
+#define IM_MAX(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a > _b ? _a : _b; })
+#define IM_MIN(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a < _b ? _a : _b; })
+#define IM_DIV(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _b ? (_a / _b) : 0; })
+#define IM_MOD(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _b ? (_a % _b) : 0; })
+
+#if 0
 #define OV9650_ID       (0x96)
 #define OV2640_ID       (0x2642)
 #define OV5640_ID		(0x5640)
@@ -20,6 +42,7 @@
 #define OV3660_ID       (0x3660)
 #define MT9V034_ID      (0x13)
 #define LEPTON_ID       (0x54)
+#endif
 
 typedef enum {
     PIXFORMAT_INVLAID = 0,
@@ -62,6 +85,7 @@ typedef enum {
     FRAMESIZE_SVGA,     // 800x600
     FRAMESIZE_SXGA,     // 1280x1024
     FRAMESIZE_UXGA,     // 1600x1200
+    FRAMESIZE_CUSTOM,
 } framesize_t;
 
 typedef enum {
@@ -269,6 +293,10 @@ int sensor_snapshot(sensor_t *sensor, image_t *image, streaming_cb_t streaming_c
 int sensor_run(int enable);
 
 bool is_img_data_in_main_fb(uint8_t* data);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __SENSOR_H__ */
 

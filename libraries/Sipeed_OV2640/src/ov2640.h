@@ -9,5 +9,15 @@
 #ifndef __OV2640_H__
 #define __OV2640_H__
 #include "sensor.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int ov2640_init(sensor_t *sensor);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif // __OV2640_H__

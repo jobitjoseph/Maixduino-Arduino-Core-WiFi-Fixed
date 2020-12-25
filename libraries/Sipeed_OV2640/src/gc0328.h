@@ -18,10 +18,18 @@
 #include <stdint.h>
 #include "sensor.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define GC0328_ID       (0x9d)
 #define GC0328_ADDR     (0x21)
 int gc0328_reset(sensor_t*);
 uint8_t gc0328_scan(void);
 int gc0328_init(sensor_t *sensor);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __GC0328_H */
