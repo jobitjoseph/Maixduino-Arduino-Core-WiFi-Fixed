@@ -182,30 +182,26 @@ void lcd_draw_point(uint16_t x, uint16_t y, uint16_t color)
 
 void lcd_clear(uint16_t color)
 {
-    uint32_t data = ((uint32_t)color << 16) | (uint32_t)color;
-
     lcd_set_area(0, 0, lcd_ctl.width, lcd_ctl.height);
-    tft_fill_half(&data, LCD_X_MAX * LCD_Y_MAX);
+    tft_fill_half(&color, LCD_X_MAX * LCD_Y_MAX);
 }
 
 void lcd_fill_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t color)
 {
-    uint32_t data = ((uint32_t)color << 16) | (uint32_t)color;
     lcd_set_area(x1, y1, x2, y2);
-    tft_fill_half(&data, (y2+1-y1)*(x2+1-x1) );
+    tft_fill_half(&color, (y2+1-y1)*(x2+1-x1) );
 }
 
 void lcd_draw_rectangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t width, uint16_t color)
 {
-    uint32_t data = ((uint32_t)color << 16) | (uint32_t)color;
     lcd_set_area(x1, y1, x2, y1 + width - 1);
-    tft_fill_half(&data, (x2+1-x1) * width);
+    tft_fill_half(&color, (x2+1-x1) * width);
     lcd_set_area(x1, y2 - width + 1, x2, y2);
-    tft_fill_half(&data, (x2+1-x1) * width);
+    tft_fill_half(&color, (x2+1-x1) * width);
     lcd_set_area(x1, y1, x1 + width - 1, y2);
-    tft_fill_half(&data, (y2+1-y1) * width);
+    tft_fill_half(&color, (y2+1-y1) * width);
     lcd_set_area(x2 - width + 1, y1, x2, y2);
-    tft_fill_half(&data, (y2+1-y1) * width);
+    tft_fill_half(&color, (y2+1-y1) * width);
 }
 
 #define SWAP_16(x) ((x >> 8 & 0xff) | (x << 8))
