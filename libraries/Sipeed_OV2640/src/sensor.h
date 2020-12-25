@@ -33,17 +33,6 @@ typedef uint32_t mp_int_t;
 #define IM_DIV(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _b ? (_a / _b) : 0; })
 #define IM_MOD(a,b)     ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _b ? (_a % _b) : 0; })
 
-#if 0
-#define OV9650_ID       (0x96)
-#define OV2640_ID       (0x2642)
-#define OV5640_ID		(0x5640)
-#define OV7725_ID       (0x77)
-#define OV7740_ID       (0x7742)
-#define OV3660_ID       (0x3660)
-#define MT9V034_ID      (0x13)
-#define LEPTON_ID       (0x54)
-#endif
-
 typedef enum {
     PIXFORMAT_INVLAID = 0,
     PIXFORMAT_BAYER,     // 1BPP/RAW
