@@ -53,6 +53,7 @@ private:
     
     int sensor_ov_detect();
     int sensro_gc_detect();
+    int sensro_mt_detect(bool pwnd);
 
     int sensor_snapshot( );
     int reverse_u32pixel(uint32_t* addr,uint32_t length);

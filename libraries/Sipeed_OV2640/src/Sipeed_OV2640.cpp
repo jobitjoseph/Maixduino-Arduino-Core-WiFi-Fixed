@@ -15,6 +15,7 @@
 #include "gc0328.h"
 #include "gc2145.h"
 #include "ov2640.h"
+#include "mt9d111.h"
 #include "Arduino.h" // millis
 
 volatile static uint8_t g_dvp_finish_flag = 0;
@@ -248,8 +249,11 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
     if(0 == sensor_ov_detect()){//find ov sensor
         // printf("find ov sensor\n");
     }
-    else if(0 == sensro_gc_detect()){//find gc0328 sensor
-        // printf("find gc3028\n");
+    else if(0 == sensro_gc_detect()){//find gc sensor
+        // printf("find gc\n");
+    }
+    else if(0 == sensro_mt_detect(true)){//find mt sensor
+        // printf("find mt\n");
     }
 
     return 0;
@@ -383,6 +387,33 @@ int Sipeed_OV2640::sensro_gc_detect()
         default:
             break;
         }
+    }
+    return 0;
+}
+
+int Sipeed_OV2640::sensro_mt_detect(bool pwnd)
+{
+    sensor_t *sensor = &_sensor;
+
+    if (pwnd)
+        DCMI_PWDN_LOW();
+    DCMI_RESET_LOW();
+    msleep(10);
+    DCMI_RESET_HIGH();
+    msleep(10);
+    uint16_t id = cambus_scan_mt9d111();
+    if (0 == id)
+    {
+        return -3;
+    }
+    else
+    {
+        _id = id;
+        _slaveAddr = MT9D111_CONFIG_I2C_ID;
+        sensor->chip_id = id;
+        sensor->slv_addr = _slaveAddr;
+        Serial.printf("[MAIX]: find mt9d111\n");
+        mt9d111_init(sensor);
     }
     return 0;
 }

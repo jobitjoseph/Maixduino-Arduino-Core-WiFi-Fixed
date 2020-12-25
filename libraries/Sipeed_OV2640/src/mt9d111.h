@@ -40,6 +40,10 @@
 #include "sensor.h"
 #include "sipeed_i2c.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // I2C addresses
 #define MT9D111_CONFIG_I2C_ADR_LOW                                  0x48
 #define MT9D111_CONFIG_I2C_ADR_HIGH                                 0xBA
@@ -2158,6 +2162,10 @@
 
 uint16_t mt9d111_read_id(i2c_device_number_t i2c_device);
 int mt9d111_init(sensor_t *sensor);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MT9D111_H_
 
