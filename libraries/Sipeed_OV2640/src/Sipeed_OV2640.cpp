@@ -16,6 +16,9 @@
 #include "gc2145.h"
 #include "ov2640.h"
 #include "mt9d111.h"
+#include "ov3660.h"
+#include "ov5640.h"
+#include "ov7740.h"
 #include "Arduino.h" // millis
 
 volatile static uint8_t g_dvp_finish_flag = 0;
@@ -263,6 +266,7 @@ int Sipeed_OV2640::dvpInit(uint32_t freq)
 
 int Sipeed_OV2640::sensor_ov_detect()
 {
+    int init_ret = 0;
     sensor_t *sensor = &_sensor;
 
     /* Reset the sensor */
@@ -316,13 +320,29 @@ int Sipeed_OV2640::sensor_ov_detect()
 		/*lepton_init*/
     } else {
         // Read ON semi sensor ID.
-        cambus_readb(_slaveAddr, ON_CHIP_ID, &_id);
+        cambus_readb(_slaveAddr, ON_CHIP_ID, (uint8_t *)&_id);
         Serial.printf("[MAIX]: on id = %x\n", _id);
         if (_id == MT9V034_ID) {
 			/*set MT9V034 xclk rate*/
 			/*mt9v034_init*/
         } else { // Read OV sensor ID.
-            cambus_readb(_slaveAddr, OV_CHIP_ID, &_id);
+            uint8_t tmp;
+            uint8_t reg_width = cambus_reg_width();
+            uint16_t reg_addr, reg_addr2;
+            if (reg_width == 8)
+            {
+                reg_addr = OV_CHIP_ID;
+                reg_addr2 = OV_CHIP_ID2;
+            }
+            else
+            {
+                reg_addr = OV_CHIP_ID_16BIT;
+                reg_addr2 = OV_CHIP_ID2_16BIT;
+            }
+            cambus_readb(_slaveAddr, reg_addr, &tmp);
+            _id = tmp << 8;
+            cambus_readb(_slaveAddr, reg_addr2, &tmp);
+            _id |= tmp;
             Serial.printf("[MAIX]: ov id = %x\n", _id);
             // Initialize sensor struct.
             sensor->chip_id = _id;
@@ -333,10 +353,25 @@ int Sipeed_OV2640::sensor_ov_detect()
                 case OV2640_ID:
                     sensor->slv_addr = _slaveAddr;
                     Serial.printf("detect ov2640, id:%x\n", _slaveAddr);
-                    ov2640_init(sensor);
+                    init_ret = ov2640_init(sensor);
+                    break;
+                case OV5640_ID:
+                    sensor->slv_addr = _slaveAddr;
+                    Serial.printf("[MAIX]: find ov5640\n");
+                    init_ret = ov5640_init(sensor);
                     break;
                 case OV7725_ID:
 					/*ov7725_init*/
+                    break;
+                case OV7740_ID:
+                    sensor->slv_addr = _slaveAddr;
+                    Serial.printf("[MAIX]: find ov7740\n");
+                    init_ret = ov7740_init(sensor);
+                    break;
+                case OV3660_ID:
+                    sensor->slv_addr = _slaveAddr;
+                    Serial.printf("[MAIX]: find ov3660\n");
+                    init_ret = ov3660_init(sensor);
                     break;
                 default:
                     // Sensor is not supported.
@@ -345,10 +380,10 @@ int Sipeed_OV2640::sensor_ov_detect()
         }
     }
 
-    // if (init_ret != 0 ) {
-    //     // Sensor init failed.
-    //     return -4;
-    // }
+    if (init_ret != 0 ) {
+        // Sensor init failed.
+        return -4;
+    }
     return 0;
 }
 

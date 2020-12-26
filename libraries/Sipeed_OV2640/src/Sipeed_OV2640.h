@@ -5,13 +5,20 @@
 #include "sensor.h"
 
 
+#define ON_CHIP_ID  (0x00)
+#define OV_CHIP_ID  (0x0A)
+#define OV_CHIP_ID2 (0x0B)
+#define OV_CHIP_ID_16BIT  (0x300A)
+#define OV_CHIP_ID2_16BIT (0x300B)
+
 #define OV9650_ID       (0x96)
-#define OV2640_ID       (0x26)
+#define OV2640_ID       (0x2642)
+#define OV5640_ID       (0x5640)
 #define OV7725_ID       (0x77)
+#define OV7740_ID       (0x7742)
+#define OV3660_ID       (0x3660)
 #define MT9V034_ID      (0x13)
 #define LEPTON_ID       (0x54)
-#define OV_CHIP_ID      (0x0A)
-#define ON_CHIP_ID      (0x00)
 
 
 class Sipeed_OV2640 : public Camera{
@@ -44,7 +51,7 @@ private:
     uint8_t  _resetPoliraty; // reset poliraty flag
     uint8_t  _pwdnPoliraty;  // PWDN poliraty flag
     uint8_t  _slaveAddr;     // camera address
-    uint8_t  _id;
+    uint16_t  _id;
     uint32_t _freq;
     sensor_t _sensor;
 

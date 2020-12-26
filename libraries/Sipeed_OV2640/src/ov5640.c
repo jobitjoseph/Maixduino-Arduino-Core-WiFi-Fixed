@@ -19,10 +19,9 @@
 #include "mphalport.h"
 #include "dvp.h"
 
-static int reset(sensor_t *sensor)
+static int ov5640_reset(sensor_t *sensor)
 {
     int i=0;
-    const uint16_t (*regs)[2];
     // Reset all registers
     cambus_writeb(sensor->slv_addr, 0x3103, 0x11);
     cambus_writeb(sensor->slv_addr, 0x3008, 0x82);
@@ -54,7 +53,7 @@ static int reset(sensor_t *sensor)
     return 0;
 }
 
-static int sleep(sensor_t *sensor, int enable)
+static int ov5640_sleep(sensor_t *sensor, int enable)
 {
     uint8_t reg;
     if (enable) {
@@ -66,7 +65,7 @@ static int sleep(sensor_t *sensor, int enable)
     return cambus_writeb(sensor->slv_addr, 0x3008, reg);
 }
 
-static int read_reg(sensor_t *sensor, uint16_t reg_addr)
+static int read_reg(sensor_t *sensor, uint8_t reg_addr)
 {
     uint8_t reg_data;
     if (cambus_readb(sensor->slv_addr, reg_addr, &reg_data) != 0) {
@@ -75,7 +74,7 @@ static int read_reg(sensor_t *sensor, uint16_t reg_addr)
     return reg_data;
 }
 
-static int write_reg(sensor_t *sensor, uint16_t reg_addr, uint16_t reg_data)
+static int write_reg(sensor_t *sensor, uint8_t reg_addr, uint16_t reg_data)
 {
     return cambus_writeb(sensor->slv_addr, reg_addr, reg_data);
 }
@@ -216,8 +215,8 @@ int ov5640_init(sensor_t *sensor)
 {
     // Initialize sensor structure.
     sensor->gs_bpp              = 1;
-    sensor->reset               = reset;
-    sensor->sleep               = sleep;
+    sensor->reset               = ov5640_reset;
+    sensor->sleep               = ov5640_sleep;
     sensor->read_reg            = read_reg;
     sensor->write_reg           = write_reg;
     sensor->set_pixformat       = set_pixformat;
