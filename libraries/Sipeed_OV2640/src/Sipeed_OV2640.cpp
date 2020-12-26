@@ -147,15 +147,64 @@ bool Sipeed_OV2640::reset()
 
 bool Sipeed_OV2640::setPixFormat(pixformat_t pixFormat)
 {
-    if(_sensor.set_pixformat(&_sensor,  pixFormat) != 0)
+    bool set_regs = true;
+
+    switch (pixFormat)
+    {
+    case PIXFORMAT_RGB565:
+        // monkey patch about ide default sensor.set_pixformat(sensor.RGB565) but it need sensor.YUV422
+        if (_sensor.chip_id != OV7740_ID && _sensor.chip_id != GC0328_ID && _sensor.chip_id != OV2640_ID)
+        {
+            dvp_set_image_format(DVP_CFG_RGB_FORMAT);
+            break;
+        } // to next yuv422
+    case PIXFORMAT_YUV422:
+        dvp_set_image_format(DVP_CFG_YUV_FORMAT);
+        break;
+    case PIXFORMAT_GRAYSCALE:
+        dvp_set_image_format(DVP_CFG_Y_FORMAT);
+        break;
+    // case PIXFORMAT_JPEG:
+    //     dvp_set_image_format(DVP_CFG_RGB_FORMAT);
+    //     break;
+    // case PIXFORMAT_BAYER:
+    //     break;
+    default:
         return false;
+    }
+
+    if (set_regs)
+    {
+        if (_sensor.set_pixformat == NULL || _sensor.set_pixformat(&_sensor, pixFormat) != 0)
+        {
+            // Operation not supported
+            return false;
+        }
+    }
+    // Set pixel format
+    _sensor.pixformat = pixFormat;
+
     return true;
 }
 
 bool Sipeed_OV2640::setFrameSize(framesize_t frameSize)
 {
-    if(_sensor.set_framesize(&_sensor, frameSize) != 0)
-        return false;
+    bool set_regs = true;
+    _sensor.size_set = false;
+
+    // Call the sensor specific function
+    if (set_regs)
+    {
+        if (_sensor.set_framesize == NULL || _sensor.set_framesize(&_sensor, frameSize) != 0)
+        {
+            // Operation not supported
+            return false;
+        }
+    }
+    // Set framebuffer size
+    _sensor.framesize = frameSize;
+
+    _sensor.size_set = true;
     return true;
 }  
 
