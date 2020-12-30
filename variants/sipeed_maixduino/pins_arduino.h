@@ -61,7 +61,10 @@ extern class UARTClass Serial3;
 #define SDA                  31
 #define SCL                  30
 
-#define WIFI_CS  25
+#define WIFI_CS   SPI0_CS1
+#define WIFI_MISO SPI0_MISO
+#define WIFI_SCLK SPI0_SCLK
+#define WIFI_MOSI SPI0_MOSI
 #define WIFI_RDY ORG_PIN_MAP(9)
 #define WIFI_RST ORG_PIN_MAP(8)
 #define WIFI_RX  ORG_PIN_MAP(7)
