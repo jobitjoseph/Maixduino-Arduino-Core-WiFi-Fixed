@@ -6,7 +6,7 @@
 	url = https://github.com/adafruit/Adafruit-GFX-Library
 [submodule "libraries/WiFiEsp"]
 	path = libraries/WiFiEsp
-	url = https://github.com/btx000/WiFiEsp
+	url = https://github.com/scpcom/WiFiEsp
 [submodule "libraries/lv_arduino"]
 	path = libraries/lv_arduino
 	url = https://github.com/btx000/lv_arduino.git
