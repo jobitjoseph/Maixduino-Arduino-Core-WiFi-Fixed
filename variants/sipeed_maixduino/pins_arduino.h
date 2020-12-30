@@ -60,6 +60,17 @@ extern class UARTClass Serial3;
 #define SDA                  31
 #define SCL                  30
 
+#define WIFI_CS  25
+#define WIFI_RDY ORG_PIN_MAP(9)
+#define WIFI_RST ORG_PIN_MAP(8)
+#define WIFI_RX  ORG_PIN_MAP(7)
+#define WIFI_TX  ORG_PIN_MAP(6)
+
+#define PINS_COUNT    48
+#define SPIWIFI_SS    WIFI_CS
+#define SPIWIFI_ACK   WIFI_RDY
+#define SPIWIFI_RESET WIFI_RST
+
 static const uint8_t SS   = SPI0_CS0 ;
 static const uint8_t MOSI = SPI0_MOSI;
 static const uint8_t MISO = SPI0_MISO;
@@ -71,13 +82,13 @@ typedef struct _pwm_fpio_set_t{
     uint8_t inuse;
 }pwm_fpio_set_t;
 
-#define MD_PIN_MAP(fpio) (((fpio) < 17) ? _maixduino_pin_map[(fpio)] : (fpio))
+#define MD_PIN_MAP(fpio) (((fpio) < 21) ? _maixduino_pin_map[(fpio)] : (fpio))
 
-static const uint8_t _maixduino_pin_map[17] = {4, 5, 21, 22, 23, 24, 32, 15, 14, 13, 12, 11, 10, 3, 31, 30, 16};
+static const uint8_t _maixduino_pin_map[21] = {4, 5, 21, 22, 23, 24, 32, 15, 14, 13, 12, 11, 10, 3, 31, 30, 16, 6, 7, 8, 9};
 
 #define ORG_PIN_MAP(org_pin) _original_pin_map[(org_pin)]
 
-static const uint8_t _original_pin_map[48] = {255, 255, 255, 13,  0,   1,   255, 255, 255, 255, 
+static const uint8_t _original_pin_map[48] = {255, 255, 255, 13,  0,   1,   17, 18, 19, 20,
                                               12,  11,  10,  9,   8,   7,   16, 255, 255, 255, 
                                               255, 2,   3,   4,   5,   255, 255, 255, 255, 255, 
                                               15,  14,  6,   255, 255, 255, 255, 255, 255, 255, 
