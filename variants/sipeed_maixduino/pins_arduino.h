@@ -46,6 +46,7 @@ extern class UARTClass Serial3;
 #define I2S_DA               34
 #define I2S_BCK              35
 /* LCD */
+#define LCD_BL               17
 #define LCD_CS               36
 #define LCD_RST              37
 #define LCD_DC               38
