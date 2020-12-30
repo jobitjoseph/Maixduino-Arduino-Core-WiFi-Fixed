@@ -82,13 +82,13 @@ typedef struct _pwm_fpio_set_t{
     uint8_t inuse;
 }pwm_fpio_set_t;
 
-#define MD_PIN_MAP(fpio) (((fpio) < 21) ? _maixduino_pin_map[(fpio)] : (fpio))
+#define MD_PIN_MAP(fpio) (((fpio) < 25) ? _maixduino_pin_map[(fpio)] : (fpio))
 
-static const uint8_t _maixduino_pin_map[21] = {4, 5, 21, 22, 23, 24, 32, 15, 14, 13, 12, 11, 10, 3, 31, 30, 16, 6, 7, 8, 9};
+static const uint8_t _maixduino_pin_map[25] = {4, 5, 21, 22, 23, 24, 32, 15, 14, 13, 12, 11, 10, 3, 31, 30, 16, 17, 18, 19, 20, 6, 7, 8, 9};
 
 #define ORG_PIN_MAP(org_pin) _original_pin_map[(org_pin)]
 
-static const uint8_t _original_pin_map[48] = {255, 255, 255, 13,  0,   1,   17, 18, 19, 20,
+static const uint8_t _original_pin_map[48] = {255, 255, 255, 13,  0,   1,   21, 22, 23, 24,
                                               12,  11,  10,  9,   8,   7,   16, 255, 255, 255, 
                                               255, 2,   3,   4,   5,   255, 255, 255, 255, 255, 
                                               15,  14,  6,   255, 255, 255, 255, 255, 255, 255, 
