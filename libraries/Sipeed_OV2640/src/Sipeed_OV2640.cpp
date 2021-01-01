@@ -71,7 +71,8 @@ Sipeed_OV2640::Sipeed_OV2640( framesize_t frameSize, pixformat_t pixFormat)
 _dataBuffer(NULL), _aiBuffer(NULL),
 _resetPoliraty(ACTIVE_HIGH), _pwdnPoliraty(ACTIVE_HIGH),
 _slaveAddr(0x00),
-_id(0)
+_id(0),
+_swapBytes(true)
 {
     configASSERT(pixFormat == PIXFORMAT_RGB565 || pixFormat==PIXFORMAT_YUV422);
 }
@@ -100,7 +101,23 @@ bool Sipeed_OV2640::begin()
         free(_dataBuffer);
     if(_aiBuffer)
         free(_aiBuffer);
-    _dataBuffer = (uint8_t*)malloc(_width*_height*2); //RGB565
+
+    _data_size = BITMAP_FILEHEADER_SIZE+BITMAP_HEADER_SIZE;
+    _data_size += (_width*_height*2);
+    _data = (RGB565_DATA*)bm_malloc(6+_data_size);
+
+    if (!_data) {
+        _width = 0;
+        _height = 0;
+        _data_size = 0;
+        Serial.println("Failed!");
+        return false;
+    }
+
+    bitmap_fill_header(_data->bitmap.FileHeader, _data->bitmap.Header, _width, _height, 16);
+
+    _dataBuffer = (uint8_t*)&_data->bitmap.Pixels[0];
+    //_dataBuffer = (uint8_t*)malloc(_width*_height*2); //RGB565
     if(!_dataBuffer)
     {
         _width = 0;
@@ -235,7 +252,7 @@ int Sipeed_OV2640::id()
  */
 uint8_t* Sipeed_OV2640::snapshot()
 {
-    if ( sensor_snapshot() != 0)
+    if ( sensor_snapshot(_swapBytes) != 0)
         return nullptr;
     return _dataBuffer;
 }
@@ -562,7 +579,7 @@ int Sipeed_OV2640::reverse_u32pixel(uint32_t* addr,uint32_t length)
 }
 
 
-int Sipeed_OV2640::sensor_snapshot( )
+int Sipeed_OV2640::sensor_snapshot( bool swap )
 {	
     //wait for new frame
     g_dvp_finish_flag = 0;
@@ -573,7 +590,19 @@ int Sipeed_OV2640::sensor_snapshot( )
         if(millis() - start > 300)//wait for 300ms
             return -1;
     }
-    reverse_u32pixel((uint32_t*)_dataBuffer, _width*_height/2);
+    if (swap)
+        reverse_u32pixel((uint32_t*)_dataBuffer, _width*_height/2);
     return 0;
 }
 
+void Sipeed_OV2640::swapBuffer() {
+    reverse_u32pixel((uint32_t*)_dataBuffer, _width*_height/2);
+}
+
+/***************************************************************************************
+** Function name:           setSwapBytes
+** Description:             Used by 16 bit pushImage() to swap byte order in colours
+***************************************************************************************/
+void Sipeed_OV2640::setSwapBytes(bool swap) {
+    _swapBytes = swap;
+}

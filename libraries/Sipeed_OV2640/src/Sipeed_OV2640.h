@@ -21,6 +21,21 @@
 #define LEPTON_ID       (0x54)
 
 
+#include "bmp/bm_alloc.h"
+#include "bmp/bmpheader.h"
+
+typedef struct {
+  char FileHeader[BITMAP_FILEHEADER_SIZE];
+  char Header[BITMAP_HEADER_SIZE];
+  uint16_t Pixels[1];
+} RGB565_BITMAP;
+
+typedef struct {
+  char _padding[6]; // avoid core dump: misaligned load
+  RGB565_BITMAP bitmap;
+} RGB565_DATA;
+
+
 class Sipeed_OV2640 : public Camera{
 
 public:
@@ -45,7 +60,15 @@ public:
     virtual void setRotation(uint8_t rotation);
     virtual void setInvert(bool invert);
 
+    // Swap the byte order for pushImage() - corrects endianness
+    void swapBuffer();
+    void setSwapBytes(bool swap);
+    inline uint8_t *GetBitmapBuf(){ return (uint8_t*)&_data->bitmap; }
+    inline size_t GetBitmapSize(){ return _data_size; }
+
 private:
+    RGB565_DATA* _data;
+    uint32_t _data_size;
     uint8_t* _dataBuffer;    // put RGB565 data
     uint8_t* _aiBuffer;      // put RGB888 data
     uint8_t  _resetPoliraty; // reset poliraty flag
@@ -53,6 +76,7 @@ private:
     uint8_t  _slaveAddr;     // camera address
     uint16_t  _id;
     uint32_t _freq;
+    bool _swapBytes;
     sensor_t _sensor;
 
     int dvpInit(uint32_t freq = 24000000);
@@ -62,7 +86,7 @@ private:
     int sensro_gc_detect();
     int sensro_mt_detect(bool pwnd);
 
-    int sensor_snapshot( );
+    int sensor_snapshot(bool swap);
     int reverse_u32pixel(uint32_t* addr,uint32_t length);
 
 };
