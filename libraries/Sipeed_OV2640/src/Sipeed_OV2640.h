@@ -87,6 +87,7 @@ private:
     int sensro_mt_detect(bool pwnd);
 
     int sensor_snapshot(bool swap);
+    int reverse_u16pixel(uint32_t* addr,uint32_t length);
     int reverse_u32pixel(uint32_t* addr,uint32_t length);
 
 };
