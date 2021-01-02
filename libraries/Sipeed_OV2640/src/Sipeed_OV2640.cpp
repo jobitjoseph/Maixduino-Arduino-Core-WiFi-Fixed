@@ -560,6 +560,24 @@ int Sipeed_OV2640::dvpInitIrq()
 
 
 
+int Sipeed_OV2640::reverse_u16pixel(uint32_t* addr,uint32_t length)
+{
+  if(NULL == addr)
+    return -1;
+
+  uint32_t data;
+  uint32_t* pend = addr+length;
+  for(;addr<pend;addr++)
+  {
+          data = *(addr);
+          *(addr) = ((data & 0x000000FF) << 8) | ((data & 0x0000FF00) >> 8) |
+                ((data & 0x00FF0000) << 8) | ((data & 0xFF000000) >> 8) ;
+  }  //1.7ms
+
+
+  return 0;
+}
+
 int Sipeed_OV2640::reverse_u32pixel(uint32_t* addr,uint32_t length)
 {
   if(NULL == addr)
@@ -596,7 +614,7 @@ int Sipeed_OV2640::sensor_snapshot( bool swap )
 }
 
 void Sipeed_OV2640::swapBuffer() {
-    reverse_u32pixel((uint32_t*)_dataBuffer, _width*_height/2);
+    reverse_u16pixel((uint32_t*)_dataBuffer, _width*_height/2);
 }
 
 /***************************************************************************************
