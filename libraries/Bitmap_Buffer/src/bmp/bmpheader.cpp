@@ -2,7 +2,7 @@
 #include "bmpheader.h"
 #include "bmp_priv.h"
 
-void bitmap_fill_header(char* bfh,  char* bh, unsigned int w, unsigned int h, unsigned short int bits)
+void bitmap_buf_fill_header(char* bfh,  char* bh, unsigned int w, unsigned int h, unsigned short int bits)
 {
   BITMAP_FILEHEADER *FileHeader = (BITMAP_FILEHEADER *)bfh;
   BITMAP_HEADER *Header = (BITMAP_HEADER *)bh;
@@ -29,7 +29,7 @@ void bitmap_fill_header(char* bfh,  char* bh, unsigned int w, unsigned int h, un
   Header->AlphaMask = 0x0000;
 }
 
-unsigned int bitmap_fileheader_size(char* bfh) {
+unsigned int bitmap_buf_fileheader_size(char* bfh) {
   BITMAP_FILEHEADER *FileHeader = (BITMAP_FILEHEADER *)bfh;
 
   return FileHeader->Size;

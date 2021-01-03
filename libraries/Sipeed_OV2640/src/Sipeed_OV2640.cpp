@@ -102,21 +102,11 @@ bool Sipeed_OV2640::begin()
     if(_aiBuffer)
         free(_aiBuffer);
 
-    _data_size = BITMAP_FILEHEADER_SIZE+BITMAP_HEADER_SIZE;
-    _data_size += (_width*_height*2);
-    _data = (RGB565_DATA*)bm_malloc(6+_data_size);
+    _data = NULL;
+    _data_size = 0;
+    _dataBuffer = NULL;
+    setDataSize();
 
-    if (!_data) {
-        _width = 0;
-        _height = 0;
-        _data_size = 0;
-        Serial.println("Failed!");
-        return false;
-    }
-
-    bitmap_fill_header(_data->bitmap.FileHeader, _data->bitmap.Header, _width, _height, 16);
-
-    _dataBuffer = (uint8_t*)&_data->bitmap.Pixels[0];
     //_dataBuffer = (uint8_t*)malloc(_width*_height*2); //RGB565
     if(!_dataBuffer)
     {
@@ -204,6 +194,34 @@ bool Sipeed_OV2640::setPixFormat(pixformat_t pixFormat)
     return true;
 }
 
+bool Sipeed_OV2640::setDataSize()
+{
+    uint32_t _old_size = _data_size;
+    _data_size = BITMAP_FILEHEADER_SIZE+BITMAP_HEADER_SIZE;
+    _data_size += (_width*_height*2);
+
+    if ((_old_size < _data_size) && _data) {
+        free(_data);
+	_data = NULL;
+    }
+
+    if (!_data)
+        _data = (RGB565_DATA_T*)bm_malloc(6+_data_size);
+
+    if (!_data) {
+        _width = 0;
+        _height = 0;
+        _data_size = 0;
+        Serial.println("Failed!");
+        return false;
+    }
+
+    bitmap_buf_fill_header(_data->bitmap.FileHeader, _data->bitmap.Header, _width, _height, 16);
+
+    _dataBuffer = (uint8_t*)&_data->bitmap.Pixels[0];
+    return true;
+}
+
 bool Sipeed_OV2640::setFrameSize(framesize_t frameSize)
 {
     bool set_regs = true;
@@ -222,6 +240,19 @@ bool Sipeed_OV2640::setFrameSize(framesize_t frameSize)
     _sensor.framesize = frameSize;
 
     _sensor.size_set = true;
+
+    _frameSize = frameSize;
+    _width = resolution[frameSize][0];
+    _height = resolution[frameSize][1];
+
+    /*setDataSize();
+
+    dvp_set_image_size(_width, _height);
+    dvp_set_ai_addr( (uint32_t)((long)_aiBuffer), (uint32_t)((long)(_aiBuffer+_width*_height)), (uint32_t)((long)(_aiBuffer+_width*_height*2)));
+    dvp_set_display_addr( (uint32_t)((long)_dataBuffer) );*/
+
+    Serial.printf("setFrameSize %dx%d\r\n", _width, _height);
+
     return true;
 }  
 

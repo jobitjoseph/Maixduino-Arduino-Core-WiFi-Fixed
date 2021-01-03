@@ -1,6 +1,7 @@
 #ifndef __SIPEED_OV2640_H
 #define __SIPEED_OV2640_H
 
+#include "Bitmap_Buffer.h"
 #include "Camera.h"
 #include "sensor.h"
 
@@ -19,21 +20,6 @@
 #define OV3660_ID       (0x3660)
 #define MT9V034_ID      (0x13)
 #define LEPTON_ID       (0x54)
-
-
-#include "bmp/bm_alloc.h"
-#include "bmp/bmpheader.h"
-
-typedef struct {
-  char FileHeader[BITMAP_FILEHEADER_SIZE];
-  char Header[BITMAP_HEADER_SIZE];
-  uint16_t Pixels[1];
-} RGB565_BITMAP;
-
-typedef struct {
-  char _padding[6]; // avoid core dump: misaligned load
-  RGB565_BITMAP bitmap;
-} RGB565_DATA;
 
 
 class Sipeed_OV2640 : public Camera{
@@ -67,7 +53,7 @@ public:
     inline size_t GetBitmapSize(){ return _data_size; }
 
 private:
-    RGB565_DATA* _data;
+    RGB565_DATA_T* _data;
     uint32_t _data_size;
     uint8_t* _dataBuffer;    // put RGB565 data
     uint8_t* _aiBuffer;      // put RGB888 data
@@ -89,6 +75,7 @@ private:
     int sensor_snapshot(bool swap);
     int reverse_u16pixel(uint32_t* addr,uint32_t length);
     int reverse_u32pixel(uint32_t* addr,uint32_t length);
+    bool setDataSize();
 
 };
 
