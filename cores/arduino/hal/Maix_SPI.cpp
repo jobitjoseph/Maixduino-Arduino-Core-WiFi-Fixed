@@ -12,6 +12,10 @@
 
 SPIClass SPI;
 
+#ifdef __cplusplus
+extern "C"{
+#endif // __cplusplus
+
 extern volatile spi_t *const spi[4];
 
 static spi_transfer_width_t sipeed_spi_get_frame_size(size_t data_bit_length)
@@ -147,10 +151,6 @@ void sipeed_spi_deinit(spi_device_num_t spi_num)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-#ifdef __cplusplus
-extern "C"{
-#endif // __cplusplus
 
 typedef struct{
     int8_t pin;
