@@ -1,46 +1,44 @@
 #include "st7789.h"
 
 
-static uint8_t g_gpio_dcx;
-static int8_t g_gpio_rst;
+static uint8_t g_dcx_pin;
+static int8_t g_rst_pin;
 static spi_device_num_t g_spi_num;
 static dmac_channel_number_t g_dma_ch;
 static uint8_t g_ss;
 static uint8_t g_wmb;
 
-static void init_dcx(uint8_t dcx, int8_t dcx_pin)
+static void init_dcx(int8_t dcx_pin)
 {
-    fpioa_set_function(dcx_pin , FUNC_GPIO0 + dcx);
-    g_gpio_dcx = dcx;
-    gpio_set_drive_mode(g_gpio_dcx, GPIO_DM_OUTPUT);
-    gpio_set_pin(g_gpio_dcx, GPIO_PV_HIGH);
+    g_dcx_pin = dcx_pin;
+    pinMode(g_dcx_pin, OUTPUT);
+    digitalWrite(g_dcx_pin, HIGH);
 }
 
 static void set_dcx_control(void)
 {
-    gpio_set_pin(g_gpio_dcx, GPIO_PV_LOW);
+    digitalWrite(g_dcx_pin, LOW);
 }
 
 static void set_dcx_data(void)
 {
-    gpio_set_pin(g_gpio_dcx, GPIO_PV_HIGH);
+    digitalWrite(g_dcx_pin, HIGH);
 }
 
-static void init_rst(uint8_t rst, int8_t rst_pin)
+static void init_rst(int8_t rst_pin)
 {
-    g_gpio_rst = rst;
+    g_rst_pin = rst_pin;
     if( rst_pin < 0)
         return ;
-    fpioa_set_function(rst_pin , FUNC_GPIO0 + rst);
-    gpio_set_drive_mode(g_gpio_rst, GPIO_DM_OUTPUT);
-    gpio_set_pin(g_gpio_rst, GPIO_PV_HIGH);
+    pinMode(g_rst_pin, OUTPUT);
+    digitalWrite(g_rst_pin, HIGH);
 }
 
 static void set_rst(uint8_t val)
 {
-    if(g_gpio_rst < 0)
+    if(g_rst_pin < 0)
         return ;
-    gpio_set_pin(g_gpio_rst, val);
+    digitalWrite(g_rst_pin, val);
 }
 
 void tft_set_clk_freq(uint32_t freq)
@@ -53,8 +51,8 @@ void tft_hard_init(uint8_t spi, uint8_t ss, uint8_t rst, uint8_t dcx, uint32_t f
     g_spi_num = spi;
     g_dma_ch = dma_ch;
     g_ss = ss;
-    init_dcx(dcx, dcx_pin);
-    init_rst(rst, rst_pin);
+    init_dcx(dcx_pin);
+    init_rst(rst_pin);
     set_rst(0);
     spi_init(g_spi_num, SPI_WORK_MODE_0, SPI_FF_OCTAL, 8, 0);
     tft_set_clk_freq(freq);

@@ -2,7 +2,7 @@
 #define _ST7789_H_
 
 #include <stdint.h>
-#include "gpio.h"
+#include "Arduino.h"
 #include "fpioa.h"
 #include "./kendryte-standalone-sdk/lib/drivers/include/spi.h"
 
