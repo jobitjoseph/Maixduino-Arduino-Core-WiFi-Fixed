@@ -18,11 +18,6 @@
 #define SIPEED_ST7789_SCLK_PIN   39
 #endif
 
-// default peripheral
-#define SIPEED_ST7789_RST_GPIONUM  6
-#define SIPEED_ST7789_DCX_GPIONUM  7
-#define SIPEED_ST7789_SS           3
-
 
 #define COLOR_BLACK       0x0000
 #define COLOR_NAVY        0x000F

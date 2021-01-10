@@ -4,6 +4,17 @@
 #include "sysctl.h"
 #include "utils.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int8_t setSs(uint8_t spi, int8_t pin);
+extern int8_t getSsByPin(uint8_t spi, int8_t pin);
+
+#ifdef __cplusplus
+}
+#endif
+
 Sipeed_ST7789::Sipeed_ST7789(uint16_t w, uint16_t h, SPIClass& spi, int8_t dc_pin, int8_t rst_pin, uint8_t dma_ch )
 :Adafruit_GFX(w,h),
  _spi(spi), _dcxPin(dc_pin), _rstPin(rst_pin), 
@@ -23,17 +34,20 @@ boolean Sipeed_ST7789::begin( uint32_t freq, uint16_t color )
     uint8_t spiNum = _spi.busId();
     if( (spi_id_t)spiNum == SPI0)
     {
-        fpioa_set_function(SIPEED_ST7789_SS_PIN  , (fpioa_function_t)(FUNC_SPI0_SS0 + SIPEED_ST7789_SS));
+        fpioa_set_function(SIPEED_ST7789_SS_PIN  , (fpioa_function_t)(FUNC_SPI0_SS0 + setSs(spiNum, SIPEED_ST7789_SS_PIN)));
         fpioa_set_function(SIPEED_ST7789_SCLK_PIN, (fpioa_function_t)FUNC_SPI0_SCLK);
     }
     else if((spi_id_t)spiNum == SPI1)
     {
-        fpioa_set_function(SIPEED_ST7789_SS_PIN  , (fpioa_function_t)(FUNC_SPI1_SS0 + SIPEED_ST7789_SS));
+        fpioa_set_function(SIPEED_ST7789_SS_PIN  , (fpioa_function_t)(FUNC_SPI1_SS0 + setSs(spiNum, SIPEED_ST7789_SS_PIN)));
         fpioa_set_function(SIPEED_ST7789_SCLK_PIN, (fpioa_function_t)FUNC_SPI1_SCLK);
     }
+    uint8_t _ss = getSsByPin(spiNum, SIPEED_ST7789_SS_PIN);
+    int8_t _rst = get_gpio(_rstPin);
+    int8_t _dcx = get_gpio(_dcxPin);
     sysctl_set_spi0_dvp_data(1);
     _freq = freq;
-    lcd_init(spiNum, SIPEED_ST7789_SS, SIPEED_ST7789_RST_GPIONUM, SIPEED_ST7789_DCX_GPIONUM, _freq, _rstPin,  _dcxPin, _dmaCh);
+    lcd_init(spiNum, _ss, _rst, _dcx, _freq, _rstPin,  _dcxPin, _dmaCh);
     lcd_set_direction((lcd_dir_t)_screenDir);
     lcd_clear(color);
     return true;
