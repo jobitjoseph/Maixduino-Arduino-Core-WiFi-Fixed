@@ -241,8 +241,12 @@ mduino.menu.clksrc.600.build.f_cpu=600000000L
 ## Burn baud rate
 mduino.menu.burn_baudrate.1500000=1.5 Mbps
 mduino.menu.burn_baudrate.1000000=1 Mbps
+mduino.menu.burn_baudrate.750000=750 Kbps
+mduino.menu.burn_baudrate.115200=115.2 Kbps
 mduino.menu.burn_baudrate.1500000.build.burn_baudrate=1500000
 mduino.menu.burn_baudrate.1000000.build.burn_baudrate=1000000
+mduino.menu.burn_baudrate.750000.build.burn_baudrate=750000
+mduino.menu.burn_baudrate.115200.build.burn_baudrate=115200
 
 ## Burn tool firmware
 mduino.menu.burn_tool_firmware.mduino=Default
