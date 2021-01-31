@@ -392,6 +392,13 @@ uint8_t SPIClass::transfer(uint8_t data)
 
 void SPIClass::transferBytes(uint8_t * data, uint8_t * out, uint32_t size)
 {
+    //only recv
+    if (data == NULL && out)
+    {
+        spi_receive_data_standard(spi_device_num_t(_spiNum), spi_chip_select_t(_ssPeriph), NULL, 0, out, size);
+        return;
+    }
+
     sipeed_spi_transfer_data_standard(spi_device_num_t(_spiNum), _ssPeriph, data, out, size);
 }
 
