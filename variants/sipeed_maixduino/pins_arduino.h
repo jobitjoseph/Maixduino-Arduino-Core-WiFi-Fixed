@@ -61,14 +61,14 @@ extern class UARTClass Serial3;
 #define LCD_WR               39
 
 
-#define WIFI_CS   SPI0_CS1
+#define WIFI_CS   ESP_SPI_CS
 #define WIFI_MISO SPI0_MISO
 #define WIFI_SCLK SPI0_SCLK
 #define WIFI_MOSI SPI0_MOSI
-#define WIFI_RDY ORG_PIN_MAP(9)
-#define WIFI_RST ORG_PIN_MAP(8)
-#define WIFI_RX  ORG_PIN_MAP(7)
-#define WIFI_TX  ORG_PIN_MAP(6)
+#define WIFI_RDY ORG_PIN_MAP(ESP_READY)
+#define WIFI_RST ORG_PIN_MAP(ESP_EN)
+#define WIFI_RX  ORG_PIN_MAP(ESP_RX)
+#define WIFI_TX  ORG_PIN_MAP(ESP_TX)
 
 #define PINS_COUNT    48
 #define SPIWIFI_SS    WIFI_CS

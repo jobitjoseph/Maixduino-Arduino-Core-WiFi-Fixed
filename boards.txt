@@ -50,6 +50,13 @@ amigo.upload.tool=kflash
 amigo.upload.maximum_size=8388608
 amigo.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
 
+amigo.build.wifidrv=ESP32_SPI
+
+amigo.menu.wifi_driver.ESPAT=Serial
+amigo.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+amigo.menu.wifi_driver.ESP32SPI=SPI
+amigo.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
+
 ##################################################
 ############# Sipeed Maix Cube ###############
 
@@ -93,6 +100,13 @@ cube.upload.tool=kflash
 ## Limit is the 16MB Flash. Assume half is used for something else.
 cube.upload.maximum_size=8388608
 cube.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
+
+cube.build.wifidrv=ESP32_SPI
+
+cube.menu.wifi_driver.ESPAT=Serial
+cube.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+cube.menu.wifi_driver.ESP32SPI=SPI
+cube.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
 ####################################################
 ############### Sipeed Maix Go Board ###############
@@ -145,6 +159,13 @@ go.upload.tool=kflash
 go.upload.maximum_size=8388608
 go.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
 
+go.build.wifidrv=ESP32_SPI
+
+go.menu.wifi_driver.ESPAT=Serial
+go.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+go.menu.wifi_driver.ESP32SPI=SPI
+go.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
+
 ##################################################
 ############# Sipeed Maixduino Board ###############
 
@@ -165,8 +186,12 @@ mduino.menu.clksrc.600.build.f_cpu=600000000L
 ## Burn baud rate
 mduino.menu.burn_baudrate.1500000=1.5 Mbps
 mduino.menu.burn_baudrate.1000000=1 Mbps
+mduino.menu.burn_baudrate.750000=750 Kbps
+mduino.menu.burn_baudrate.115200=115.2 Kbps
 mduino.menu.burn_baudrate.1500000.build.burn_baudrate=1500000
 mduino.menu.burn_baudrate.1000000.build.burn_baudrate=1000000
+mduino.menu.burn_baudrate.750000.build.burn_baudrate=750000
+mduino.menu.burn_baudrate.115200.build.burn_baudrate=115200
 
 ## Burn tool firmware
 mduino.menu.burn_tool_firmware.mduino=Default
@@ -189,6 +214,13 @@ mduino.upload.tool=kflash
 ## Limit is the 16MB Flash. Assume half is used for something else.
 mduino.upload.maximum_size=8388608
 mduino.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
+
+mduino.build.wifidrv=ESP32_SPI
+
+mduino.menu.wifi_driver.ESPAT=Serial
+mduino.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+mduino.menu.wifi_driver.ESP32SPI=SPI
+mduino.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
 ##################################################
 ############# Sipeed M1W Dock Board ###############
@@ -236,6 +268,13 @@ m1w.upload.tool=kflash
 ## Limit is the 16MB Flash. Assume half is used for something else.
 m1w.upload.maximum_size=8388608
 m1w.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
+
+m1w.build.wifidrv=ESP32_SPI
+
+m1w.menu.wifi_driver.ESPAT=Serial
+m1w.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+m1w.menu.wifi_driver.ESP32SPI=SPI
+m1w.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
 ##################################################
 ############# Sipeed M1 Dock Board ###############
@@ -396,6 +435,8 @@ bitm.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
 bitm.menu.wifi_driver.ESP32SPI=SPI
 bitm.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
+##################################################
+############# M5Stack M5StickV Stick ###############
 
 stickv.name=M5Stack M5StickV Stick
 
@@ -440,12 +481,12 @@ stickv.upload.tool=kflash
 stickv.upload.maximum_size=8388608
 stickv.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
 
-go.build.wifidrv=ESP32_SPI
+stickv.build.wifidrv=ESP32_SPI
 
-go.menu.wifi_driver.ESPAT=Serial
-go.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
-go.menu.wifi_driver.ESP32SPI=SPI
-go.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
+stickv.menu.wifi_driver.ESPAT=Serial
+stickv.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+stickv.menu.wifi_driver.ESP32SPI=SPI
+stickv.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
 ##################################################
 ############# M5Stack M5UnitV Camera ###############
@@ -465,14 +506,10 @@ unitv.menu.clksrc.500.build.f_cpu=500000000L
 unitv.menu.clksrc.600.build.f_cpu=600000000L
 
 ## Burn baud rate
-mduino.menu.burn_baudrate.1500000=1.5 Mbps
-mduino.menu.burn_baudrate.1000000=1 Mbps
-mduino.menu.burn_baudrate.750000=750 Kbps
-mduino.menu.burn_baudrate.115200=115.2 Kbps
-mduino.menu.burn_baudrate.1500000.build.burn_baudrate=1500000
-mduino.menu.burn_baudrate.1000000.build.burn_baudrate=1000000
-mduino.menu.burn_baudrate.750000.build.burn_baudrate=750000
-mduino.menu.burn_baudrate.115200.build.burn_baudrate=115200
+unitv.menu.burn_baudrate.1500000=1.5 Mbps
+unitv.menu.burn_baudrate.1000000=1 Mbps
+unitv.menu.burn_baudrate.1500000.build.burn_baudrate=1500000
+unitv.menu.burn_baudrate.1000000.build.burn_baudrate=1000000
 
 ## Burn tool firmware
 unitv.menu.burn_tool_firmware.unit1=CH340
@@ -496,13 +533,12 @@ unitv.upload.tool=kflash
 unitv.upload.maximum_size=8388608
 unitv.build.ldscript="{runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld"
 
-mduino.build.wifidrv=ESP32_SPI
+unitv.build.wifidrv=ESP32_SPI
 
-mduino.menu.wifi_driver.ESPAT=Serial
-mduino.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
-mduino.menu.wifi_driver.ESP32SPI=SPI
-mduino.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
-
+unitv.menu.wifi_driver.ESPAT=Serial
+unitv.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+unitv.menu.wifi_driver.ESP32SPI=SPI
+unitv.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
 
 ##################################################
 ############# LamLoei AIoT DaaN Board ###############
@@ -551,6 +587,13 @@ aiotdaan.upload.tool=kflash
 aiotdaan.upload.maximum_size=8388608
 aiotdaan.build.ldscript={runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld
 
+aiotdaan.build.wifidrv=ESP32_SPI
+
+aiotdaan.menu.wifi_driver.ESPAT=Serial
+aiotdaan.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+aiotdaan.menu.wifi_driver.ESP32SPI=SPI
+aiotdaan.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
+
 ##################################################
 ############# IOXGD4 ###############
 
@@ -597,3 +640,10 @@ ioxgd4.upload.tool=kflash
 ## Limit is the 16MB Flash. Assume half is used for something else.
 ioxgd4.upload.maximum_size=8388608
 ioxgd4.build.ldscript={runtime.platform.path}/cores/arduino/kendryte-standalone-sdk/lds/kendryte.ld
+
+ioxgd4.build.wifidrv=ESP32_SPI
+
+ioxgd4.menu.wifi_driver.ESPAT=Serial
+ioxgd4.menu.wifi_driver.ESPAT.build.wifidrv=ESP_AT
+ioxgd4.menu.wifi_driver.ESP32SPI=SPI
+ioxgd4.menu.wifi_driver.ESP32SPI.build.wifidrv=ESP32_SPI
