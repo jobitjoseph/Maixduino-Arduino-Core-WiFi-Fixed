@@ -21,6 +21,9 @@ extern class UARTClass Serial3;
 /* UART */
 #define RX0                   4
 #define TX0                   5
+/* UART1 (unused) */
+#define RX1                   6
+#define TX1                   7
 /* WS2812 LEDs */
 #define PIN_LED_RGB           8
 
