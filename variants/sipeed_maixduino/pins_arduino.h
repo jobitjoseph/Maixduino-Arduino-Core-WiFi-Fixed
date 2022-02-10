@@ -32,6 +32,8 @@ extern class UARTClass Serial3;
 /* KEY */
 //#define KEY0                 16
 /* ONBOARD ESP32 */
+#define RX1                   6
+#define TX1                   7
 #define ESP_TX                6
 #define ESP_RX                7
 #define ESP_EN                8
