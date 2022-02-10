@@ -40,10 +40,10 @@ compiler.elf2hex.flags=-R .rel.dyn
 
 compiler.define=-DARDUINO=
 
-compiler.c.extra_flags=-DF_CPU={build.f_cpu} -D{build.board} -D{arch_for_c_cpp} -DARCH={arch_for_c_cpp} -DWIFI_{build.wifidrv}
+compiler.c.extra_flags=-DF_CPU={build.f_cpu} -D{build.board} -DBOARD_SIPEED_{build.board} -D{arch_for_c_cpp} -DARCH={arch_for_c_cpp} -DWIFI_{build.wifidrv}
 compiler.c.elf.extra_flags=
-compiler.cpp.extra_flags=-DF_CPU={build.f_cpu} -D{build.board} -D{arch_for_c_cpp} -DARCH={arch_for_c_cpp} -DWIFI_{build.wifidrv}
-compiler.S.extra_flags=-DF_CPU={build.f_cpu} -D{build.board}
+compiler.cpp.extra_flags=-DF_CPU={build.f_cpu} -D{build.board} -DBOARD_SIPEED_{build.board} -D{arch_for_c_cpp} -DARCH={arch_for_c_cpp} -DWIFI_{build.wifidrv}
+compiler.S.extra_flags=-DF_CPU={build.f_cpu} -D{build.board} -DBOARD_SIPEED_{build.board}
 compiler.ar.extra_flags=
 compiler.elf2hex.extra_flags=
 

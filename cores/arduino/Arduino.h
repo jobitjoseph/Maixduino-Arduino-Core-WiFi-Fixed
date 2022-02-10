@@ -33,6 +33,13 @@
 #include <avr/dtostrf.h>
 //#include <avr/interrupt.h>
 
+#ifdef MAIX_DOCK_M1
+#define MAIX_ONE_DOCK
+#endif
+#ifdef BOARD_SIPEED_MAIX_DOCK_M1
+#define BOARD_SIPEED_MAIX_ONE_DOCK
+#endif
+
 #include "binary.h"
 #include "pins_arduino.h"
 
