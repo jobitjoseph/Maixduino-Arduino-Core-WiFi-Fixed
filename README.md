@@ -57,6 +57,8 @@ Follow ```kflash``` github page on installation instruction.
  3. Burn Baudrate: Decrease it if download fails
  4. Port: Serial port, e.g. ```/dev/ttyUSB0```
  5. Programmer: ```k-flash```
+ 6. 6 WiFi Driver: Change it to ```SPI```
+<img src="https://github.com/jobitjoseph/Maixduino-Arduino-Core-WiFi-Fixed/blob/bc32ba832b8b61121dcc111c5f8153edfacebdcd/Maixduino_WiFi_SPI.png" width="" alt="alt_text" title="image_tooltip">
 
 ## Credits
 
