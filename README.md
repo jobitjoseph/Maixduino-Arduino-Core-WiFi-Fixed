@@ -39,20 +39,11 @@ Refer install doc: [Install](https://maixduino.sipeed.com/en/get_started/install
  1. [Download and install the Arduino IDE](https://www.arduino.cc/en/Main/Software) (at least version v1.9.8)
  2. Start the Arduino IDE
  3. Go into Preferences
- 4. Add ```https://dl.sipeed.com/MAIX/Maixduino/package_Maixduino_k210_index.json``` as an "Additional Board Manager URL"
+ 4. Add ```https://seafile.servator.de/sbc/MAIX/Maixduino/package_Maixduino_k210_multi_index.json``` as an "Additional Board Manager URL"
  5. Open the Boards Manager from the Tools -> Board menu and install "Maixduino(K210)"
  6. Select your K210 board from the Tools -> Board menu
 
-### From git
 
- 1. Follow steps from Board Manager section above
- 2. ```cd <SKETCHBOOK>```, where ```<SKETCHBOOK>``` is your Arduino Sketch folder:
-  * OS X: ```~/Documents/Arduino```
-  * Linux: ```~/Arduino```
-  * Windows: ```~/Documents/Arduino```
- 3. Create a folder named ```hardware```, if it does not exist, and change directories to it
- 4. Clone this repo: ```git clone https://github.com/Sipeed/Maixduino Maixduino/k210```
- 5. Restart the Arduino IDE
 
 ### Firmware flashing
 The firmware of the K210 devices is updated with a Python-based [kflash](https://github.com/sipeed/kflash.py) cross-platform tool.
